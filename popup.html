@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bangla Page Translator</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <h1>Bangla Page Translator</h1>
+
+    <div class="status-row">
+      <span id="statusDot" class="dot ready"></span>
+      <span id="statusText">Ready</span>
+    </div>
+    <div id="progressText" class="progress"></div>
+    <div id="errorText" class="error" hidden></div>
+
+    <button id="translateBtn" class="primary" type="button">Translate to Bangla</button>
+    <button id="restoreBtn" type="button">Restore Original</button>
+
+    <p class="hint">
+      Uses the free Google Translate endpoint. No API key, no account, no layout
+      changes - only the page text is replaced.
+    </p>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
