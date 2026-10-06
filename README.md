@@ -118,40 +118,6 @@ Tips:
 - Long paragraphs are cut into ~400-character pieces, so an occasional
   unnatural break at a piece boundary is possible.
 
-## 5. Publishing on AMO (addons.mozilla.org)
-
-**The file you upload is `bangla-page-translator.xpi` (or `.zip`) - never
-`manifest.json`.** Uploading `manifest.json` produces AMO's
-*"Your add-on should end with .zip, .xpi or .crx / The filetype you uploaded
-isn't recognized"* error.
-
-Manifest notes that AMO validation checks:
-
-- `browser_specific_settings.gecko.data_collection_permissions` is present
-  (required for every new Firefox add-on since 2025-11-03). This extension
-  declares `"required": ["websiteContent"]`, because the page text you choose
-  to translate is transmitted to Google Translate. Honest declaration - do not
-  change it to `none`.
-- `strict_min_version` is `140.0` (`142.0` on Android), the Firefox versions
-  that first support the data-collection key.
-- Host permissions cover **both** Google hosts so the automatic failover works.
-- Check `npx --yes addons-linter bangla-page-translator.xpi` before
-  uploading - it must report 0 errors / 0 warnings.
-
-Submission checklist:
-
-1. Log in with a Mozilla account at
-   https://addons.mozilla.org/en-US/developers/addon/submit/upload-unlisted
-   (unlisted = signed but not searchable in the add-on store).
-2. Upload **`bangla-page-translator.xpi`**.
-3. Fill the details form: description, category, privacy policy URL (host
-   `PRIVACY.md` anywhere public, e.g. a GitHub repository page) - required
-   because the add-on transmits the text you translate.
-4. Submit. Unlisted add-ons are usually signed within minutes to a few hours;
-   you then get a `.xpi` download link for direct installation.
-
-To release a new version, upload the new `.xpi` on the same add-on page with a
-bumped `version` in `manifest.json`.
 
 ## Running it locally (development)
 
