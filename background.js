@@ -668,7 +668,10 @@ async function handleInject(message) {
     return { ok: false, error: 'No active tab.' };
   }
   try {
-    await browser.tabs.executeScript(tabId, { file: 'content.js' });
+    await browser.scripting.executeScript({
+      target: { tabId: tabId },
+      files: ['content.js']
+    });
     return { ok: true };
   } catch (err) {
     return {

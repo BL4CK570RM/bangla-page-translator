@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Bangla Page Translator",
   "version": "1.0.0",
   "description": "Translate any webpage into Bangla (Bengali) with one click, using the free Google Translate endpoint. No API key required.",
@@ -13,16 +13,18 @@
   "permissions": [
     "activeTab",
     "storage",
+    "scripting"
+  ],
+  "host_permissions": [
     "https://translate.googleapis.com/*",
     "https://translate.google.com/*"
   ],
   "background": {
     "scripts": [
       "background.js"
-    ],
-    "persistent": true
+    ]
   },
-  "browser_action": {
+  "action": {
     "default_title": "Bangla Page Translator",
     "default_popup": "popup.html",
     "default_icon": {
