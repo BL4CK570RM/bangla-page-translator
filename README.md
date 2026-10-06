@@ -39,7 +39,7 @@ endpoint (no API key, no paid Google Cloud API, no account).
 
 | File           | Role |
 | -------------- | ---- |
-| `manifest.json`| Manifest V2, permissions, popup, content script registration |
+| `manifest.json`| Manifest V3, permissions, icons, popup, content script registration |
 | `background.js`| Talks to Google Translate: chunking, batching, parallel requests with rate limiting, retries, cache in `browser.storage.local` |
 | `content.js`   | Finds/replaces text nodes, stores originals, `MutationObserver` for new content |
 | `popup.html`   | Popup UI (Translate / Restore buttons + status) |
@@ -118,6 +118,63 @@ Tips:
 - Long paragraphs are cut into ~400-character pieces, so an occasional
   unnatural break at a piece boundary is possible.
 
+## 5. Publishing on AMO (addons.mozilla.org)
+
+Two IDs are in play:
+
+| ID | Purpose |
+| -- | ------- |
+| `bangla-page-translator@example.local` | old self-distributed / unlisted build (kept as-is) |
+| `bangla-page-translator-public@mahmidulhasan.com` | public "On this site" listing (current `manifest.json`) |
+
+AMO rejects a public add-on that reuses the unlisted ID (*"Duplicate add-on
+ID found"*), which is why the manifest now carries the public ID.
+
+**Never upload `manifest.json` itself** - AMO then answers *"Your add-on
+should end with .zip, .xpi or .crx"*. The archive must contain
+`manifest.json` at its **root**; a right-click "Compress folder" zip (which
+wraps everything in a `bangla-page-translator/` directory) fails with
+*"TYPE_NO_MANIFEST_JSON: manifest.json was not found at the root"*.
+
+Packages:
+
+- `bangla-page-translator-public.zip` - the public listing upload (clean
+  package: manifest, scripts, icons, `PRIVACY.md` only).
+- `bangla-page-translator.xpi` / `.zip` - local/development builds.
+
+Manifest notes that AMO validation checks:
+
+- **Manifest V3** (AMO no longer accepts new Manifest V2 add-ons). In Firefox
+  the background runs as an event page (`background.scripts` - Firefox does
+  not support `background.service_worker`).
+- `host_permissions` lists **both** Google hosts so the automatic failover
+  works; the `scripting` permission replaces the MV2 `tabs.executeScript`
+  call with `browser.scripting.executeScript`.
+- `browser_specific_settings.gecko.data_collection_permissions` is present
+  (required for every new Firefox add-on since 2025-11-03). This extension
+  declares `"required": ["websiteContent"]`, because the page text you choose
+  to translate is transmitted to Google Translate. Honest declaration - do not
+  change it to `none`.
+- `strict_min_version` is `140.0` (`142.0` on Android), the Firefox versions
+  that first support the data-collection key.
+- Listing text (name, summary, description, tags, privacy wording) lives in
+  `AMO_LISTING.md`.
+- Check `web-ext lint` (or `addons-linter bangla-page-translator-public.zip`)
+  before uploading - both must report 0 errors / 0 warnings.
+
+Submission checklist (public listing):
+
+1. Log in with a Mozilla account at the Add-ons Developer Hub.
+2. **Developer Hub -> Submit a New Add-on -> On this site**.
+3. Upload **`bangla-page-translator-public.zip`**.
+4. Fill the details form using `AMO_LISTING.md`; add a privacy policy URL
+   (host `PRIVACY.md` anywhere public, e.g. a GitHub repository page) - it is
+   required because the add-on transmits the text you translate.
+5. Submit for review. Approved public add-ons then appear on
+   addons.mozilla.org.
+
+To release a new version, upload the new package on the add-on's page with a
+bumped `version` in `manifest.json`.
 
 ## Running it locally (development)
 
